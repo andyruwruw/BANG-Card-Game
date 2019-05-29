@@ -1,24 +1,18 @@
 <template>
-  <div class="titlescreen">
+  <div class="bangtitle">
       <div id="content">
         <h1>BANG!</h1>
-        <login v-if="toggle"/>
-        <register v-else/>
+        <button>Create</button>
+        <button>Join</button>
       </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Login from '@/components/Menu/Login.vue'
-import Register from '@/components/Menu/Register.vue'
 
 export default {
-  name: 'titlescreen',
-  components: {
-    Login,
-    Register,
-  },
+  name: 'bangtitle',
   computed: {
     toggle() {
       return this.$store.state.loginregister;

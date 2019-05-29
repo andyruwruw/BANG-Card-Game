@@ -2,6 +2,7 @@
 <div id="status">
   <h1>Queuing</h1>
   <h1>{{timeElapsed}}</h1>
+  <button @click="cancel">Cancel Search</button>
 </div>
 </template>
 
@@ -15,7 +16,12 @@ export default {
     }
   },
   methods: {
-
+    async cancel() {
+      this.error = await this.$store.dispatch("findMatch", {
+          username: this.username,
+          password: this.password
+      });
+    },
     update()
     {
       this.now = new Date();
@@ -25,9 +31,10 @@ export default {
     timeElapsed() {
       let miliseconds = this.now.getTime() - this.start.getTime();
       let seconds = Math.floor(miliseconds / 1000);
+      let newseconds = seconds;
       let minutes = 0;
       while (seconds >= 60) {
-        seconds -= 60;
+        newseconds -= 60;
         minutes += 1;
       }
       let add = "0";
@@ -35,7 +42,7 @@ export default {
       {
         add = "";
       }
-      return minutes + ":" + add + seconds;
+      return minutes + ":" + add + newseconds;
     }
   },
   created() {

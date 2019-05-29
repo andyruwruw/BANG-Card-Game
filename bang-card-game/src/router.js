@@ -1,11 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import TitleScreen from './views/Menu/TitleScreen.vue'
-import MainMenu from './views/Menu/MainMenu.vue'
+
+import BangTitle from './views/Menu/BangTitle.vue'
+
+import Create from './views/Game/Create.vue'
 
 import Lobby from './views/Game/Lobby.vue'
-import Match from './views/Game/Match.vue'
-import Spectate from './views/Game/Spectate.vue'
+import Screen from './views/Game/Screen.vue'
+import Hand from './views/Game/Hand.vue'
+
+import Settings from './views/Settings.vue'
 
 Vue.use(Router)
 
@@ -15,13 +19,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'titlescreen',
-      component: TitleScreen
+      name: 'bang',
+      component: BangTitle
     },
     {
-      path: '/menu',
-      name: 'menu',
-      component: MainMenu
+      path: '/create',
+      name: 'create',
+      component: Create
     },
     {
       path: '/lobby/:GameId',
@@ -29,14 +33,14 @@ export default new Router({
       component: Lobby
     },
     {
-      path: '/match/:GameId',
-      name: 'match',
-      component: Match
+      path: '/screen/:GameId',
+      name: 'screen',
+      component: Screen
     },
     {
-      path: '/spectate/:GameId',
-      name: 'spectate',
-      component: Spectate
+      path: '/settings',
+      name: 'settings',
+      component: Settings
     },
   ]
 })
