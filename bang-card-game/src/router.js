@@ -5,11 +5,11 @@ import BangTitle from './views/Menu/BangTitle.vue'
 
 import Create from './views/Game/Create.vue'
 
-import Lobby from './views/Game/Lobby.vue'
 import Screen from './views/Game/Screen.vue'
-import Hand from './views/Game/Hand.vue'
 
 import Settings from './views/Settings.vue'
+
+import Small from './views/Menu/Small.vue'
 
 Vue.use(Router)
 
@@ -28,11 +28,6 @@ export default new Router({
       component: Create
     },
     {
-      path: '/lobby/:GameId',
-      name: 'lobby',
-      component: Lobby
-    },
-    {
       path: '/screen/:GameId',
       name: 'screen',
       component: Screen
@@ -41,6 +36,11 @@ export default new Router({
       path: '/settings',
       name: 'settings',
       component: Settings
+    },
+    {
+      path: '/small',
+      name: 'small',
+      component: Small
     },
   ]
 })

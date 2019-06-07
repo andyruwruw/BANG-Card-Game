@@ -1,24 +1,46 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios';
+import { SSL_OP_MICROSOFT_SESS_ID_BUG } from 'constants';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    ErrorMessage: "",
+
     Game: {
-      GameId: null,
+      GameId: 1,
       Properties: [],
   
       Players: [
         {
+          UserName: "ANDREW",
           Turn: false,
           Role: null,
           Character: "",
           Health: 3,
           Hand: 0,
           Actives: [],
-        }
+        },
+        {
+          UserName: "MARIAH",
+          Turn: false,
+          Role: null,
+          Character: "",
+          Health: 3,
+          Hand: 0,
+          Actives: [],
+        },
+        {
+          UserName: "SATAN",
+          Turn: false,
+          Role: null,
+          Character: "",
+          Health: 3,
+          Hand: 0,
+          Actives: [],
+        },
       ],
   
       DrawPile: [],
@@ -64,6 +86,9 @@ export default new Vuex.Store({
     },
     setGame(state, Game) {
       state.Game = Game;
+    },
+    setError(state, ErrorMessage) {
+      state.ErrorMessage = ErrorMessage;
     },
     setPreferences(state, preferences) {
       state.preferences = preferences;
@@ -120,11 +145,33 @@ export default new Vuex.Store({
       }
     },
   // MATCHMAKING--------------------------------------------------------------------------------------------------------
-    async startGame() {
-      
+    async createGame(context, payload) {
+      let response = await axios.post("/desktop/create/" + payload.GameId, payload);
+      if (response.Created) {
+        context.commit('setGame', response.Desktop);
+      }
+      else {
+        context.commit('setError', response.Error);
+      }
+    },
+    async joinGame(context, payload) {
+      let response = await axios.put("/desktop/join/" + payload.GameId);
+      if (response.Found) {
+        context.commit('setGame', response.Desktop);
+      }
+      else {
+        context.commit('setError', response.Error);
+      }
     },
     async awaitUpdate() {
-
+      let response = await axios.get("/desktop/check/" + this.state.Game.GameId);
+      if (response.Get)
+      {
+        context.commit('setGame', response.Desktop);
+      }
+      else {
+        context.commit('setError', respones.Error);
+      }
     },
   // GAME--------------------------------------------------------------------------------------------------------
     

@@ -1,50 +1,43 @@
 const mongoose = require('mongoose');
 const express = require("express");
 const router = express.Router();
-const auth = require("./auth.js");
-
-const users = require("./users.js");
-const User = users.model;
-
-const gameLogic = require("./gameLogic.js");
 
 // Mongoose Schemas and Objects
+//
+//2655
 
 const gameSchema = new mongoose.Schema({
   GameId: Number,
+  Stage: String,
+
+  Started: false,
+
+  PlayersWaitingFor: [],
+
   MatchTypeKey: String,
-  State: [],
   Properties: [],
+
   StateData: {
-    Roles: [],
-    Hands: [],
-    Actives: [],
-    Health: [],
+    Players: [],
   
     DrawPile: [],
     DiscardPile: [],
   },
+
   OutcomeData: String,
   HasOutcome: Boolean,
+
   TurnTimeout: {
     Time: Number,
     Started: Date,
     Expires: Date,
   },
-  WaitingTimeout: {
-    Time: 30,
-    Started: Date,
-    Expires: Date,
-  },
-  Turn: {
-    TurnNumber: Number,
-    PlayersWaitingFor: [],
-    CardInPlay: String,
-  },
-  TurnType: String,
+
+  TurnNumber: Number,
+  PlayerTurn: String,
   TurnOrderType: String,
 
-  Players: [],
+  CardInPlay: String,
 
   created: {
     type: Date,
@@ -54,70 +47,209 @@ const gameSchema = new mongoose.Schema({
   
 const Game = mongoose.model('Game', gameSchema);
 
-// Creates a game
-// Returns Roles
-router.post("/startgame/:MatchId", auth.verifyToken, User.verify, async (req, res) => {    // Create a match when ready.
+/*
+Player
+  UserName: String
+  Role: String
+  Character: String
+  Leader: Boolean
+
+  Hand: Array
+  Blue: Array
+  Green: Array
+  Orange: Array
+  Health: Number
+  LoadTokens: Number
+
+
+  Turn: Boolean
+
+  CheckActives: Boolean
+*/
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------DESKTOP FUNCTIONS
+router.post("/desktop/create/:MatchId", async (req, res) => {    // Desktop creates match.
   let result = {                                      
-    MatchId: null,
+    Created: false,
     Error: null,
-    Joined: false,
-    Data: null
+    Desktop: null
   };
-  result = createGame(result, req.user, req.body);
+  result = createGame(result, req.body, req.param.MatchId);
   return res.send(result);
 });
 
-async function createGame(result, user, data) {
+router.get("/desktop/check/:MatchId", async (req, res) => {    // Desktop gets match data.
+  let result = {                                      
+    Get: false,
+    Error: null,
+    Desktop: null
+  };
+  result = checkGame(result, req.param.MatchId);
+  return res.send(result);
+});
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------HAND FUNCTIONS
+router.put("/hand/join/:MatchId", async (req, res) => {    // Mobile joins the match.
+  let result = {                                      
+    Joined: false,
+    Error: null,
+    Player: null
+  };
+  result = joinGame(result, req.body, req.param.MatchId);
+  return res.send(result);
+});
+
+router.put("/hand/check/:MatchId", async (req, res) => {    // Mobile checks in for changes.
+  let result = {                                      
+    Check: false,
+    Error: null,
+    Player: null
+  };
+  result = checkGameHand(result, req.param.MatchId);
+  return res.send(result);
+});
+
+router.put("/hand/draw/:MatchId", async (req, res) => {    // Mobile discards down their cards.
+  let result = {                                      
+    Success: false,
+    Error: null,
+    Player: null
+  };
+  result = drawCards(result, req.body, req.param.MatchId);
+  return res.send(result);
+});
+
+router.put("/hand/playcard/:MatchId", async (req, res) => {    // Mobile plays a card from their hand
+  let result = {                                      
+    Played: false,
+    Error: null,
+    Player: null
+  };
+  result = playCard(result, req.body, req.param.MatchId);
+  return res.send(result);
+});
+
+router.put("/hand/miss/:MatchId", async (req, res) => {    // Mobile plays an out of turn card.
+  let result = {                                      
+    Played: false,
+    Error: null,
+    Player: null
+  };
+  result = miss(result, req.body, req.param.MatchId);
+  return res.send(result);
+});
+
+router.put("/hand/discard/:MatchId", async (req, res) => {    // Mobile discards down their cards.
+  let result = {                                      
+    MoveOn: false,
+    Error: null,
+    Player: null
+  };
+  result = discard(result, req.body, req.param.MatchId);
+  return res.send(result);
+});
+
+/*
+let Data = {
+  GameId: String,
+  MatchTypeKey: String,
+  Properties: [],
+
+  Player: {
+    UserName: "",
+    Secret: "",
+  },
+
+  Cards: [],
+
+  TurnTimeout: Number,
+}
+
+*/
+
+// Creates a new player object.
+async function createPlayer(data, leaderBool) {
+  let Player = {
+    UserName: data.UserName,
+    Role: null,
+    Character: null,
+    Leader: false,
+    Health: null,
+
+    Hand: [],
+    Blue: [],
+    Green: null,
+    Orange: null,
+    LoadTokens: null,
+
+    Turn: false,
+
+    CheckActives: false,
+
+    CheckIn: new Date(),
+  }
+  if (leaderBool) {
+    Player.Leader = true;
+  }
+  return Player;
+}
+
+// Fisher-Yates Shuffle
+async function shuffleArray(array) { 
+  var currentIndex = array.length;
+  var temporaryValue = null;
+  var randomIndex = null;
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+}
+
+// Creates a new game and leader's player info.
+async function createGame(result, data, GameId) {
   try {
+    let Leader = await createPlayer(data, true);
+
     let game = new Game({
-      GameId: data.GameId,
+      GameId: GameId,
+      Stage: "roles",
+    
+      PlayersWaitingFor: [Leader.UserName],
+    
       MatchTypeKey: data.MatchTypeKey,
-      State: [],
       Properties: data.Properties,
+    
       StateData: {
-        Roles: [],
-        Characters: [],
-        Hands: [],
-        Actives: [],
-        Health: [],
+        Players: [Leader],
       
-        DrawPile: [],
+        DrawPile: [await shuffleArray(data.Cards)],
         DiscardPile: [],
       },
-      OutcomeData: "None",
+    
+      OutcomeData: "",
       HasOutcome: false,
+    
       TurnTimeout: {
         Time: data.TurnTimeout,
         Started: null,
         Expires: null,
       },
-      WaitingTimeout: {
-        Time: 30,
-        Started: null,
-        Expires: null,
-      },
-      Turn: {
-        TurnNumber: 1,
-        PlayersWaitingFor: [],
-        CardInPlay: "",
-      },
-      TurnType: data.TurnType,
-      TurnOrderType: data.TurnOrderType,
     
-      Players: data.Players,
+      TurnNumber: 1,
+      PlayerTurn: null,
+      TurnOrderType: "normal",
+    
+      CardInPlay: "",
     
       created: {
         type: Date,
         default: Date.now
       },
     });
-    
-    game.DrawPile = new Deck(assembleCards(game.Properties));
-    game.Roles = shuffleRoles(Players.length);
-    for (var i = 0; i < game.Players.length; i++)
-    {
-      game.State.push("Waiting");
-    }
     await game.save();
     result.Data = game;
     return result;
@@ -127,23 +259,18 @@ async function createGame(result, user, data) {
   }
 }
 
-// Get Role, Join Game
-router.put("/joingame/:MatchId", auth.verifyToken, User.verify, async (req, res) => {
-  let game = await Game.findOne({
-    GameId: req.params.MatchId,
-  });
-  return res.send(game);
-});
+async function joinGame(result, data, GameId) {
+  try {
+    let game = Game.findOne({
+      GameId: GameId
+    });
+  } catch (error) {
+    result.Error = error;
+    return result;
+  }
+}
 
 
-
-router.get("/check/:MatchId/:PlayerNum", auth.verifyToken, User.verify, async (req, res) => {    // Create a match when ready.
-  let result = {                                      
-    Refresh: false,
-  };
-  result = createGame(result, req.user, req.body);
-  return res.send(result);
-});
 
 
 

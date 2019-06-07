@@ -7,6 +7,10 @@
 <style>
 @import url('https://fonts.googleapis.com/css?family=Stylish&display=swap');
 
+body.noScroll { /* ...or body.dialogShowing */
+  overflow: hidden;
+}
+
 #app {
   font-family: 'Stylish', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -28,6 +32,15 @@
   z-index: 100;
 }
 
+body {
+  background-color: rgb(255, 255, 255);
+  background-size: auto 100vh;
+}
+
+.flex {
+  display: flex;
+}
+
 @font-face {
   font-family: 'RioGrande';
   src: url('./assets/fonts/RioGrande.ttf') format('truetype');
@@ -38,8 +51,4 @@
   src: url('./assets/fonts/RioGrandeStriped.ttf') format('truetype');
 }
 
-@font-face {
-  font-family: 'BootsandSpurs';
-  src: url('./assets/fonts/BootsandSpurs.ttf') format('truetype');
-}
 </style>

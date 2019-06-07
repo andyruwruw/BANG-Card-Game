@@ -3,14 +3,21 @@
     <h1>Create a Match</h1>
     <h1>Presets</h1>
     <div class="flex">
-        <div v-bind:class="{active : MatchData.MatchTypeKey == preset.typekey}" class="preset" @click="loadPreset(preset.num)" v-for="preset in presets" v-bind:key="preset.typekey">
-            <h2>{{preset.name}}</h2>
-            <p>{{preset.description}}</p>
-        </div>
+        <button class="preset">Bang!</button>
+        <button class="preset">Dodge City</button>
+        <button class="preset">High Noon</button>
+        <button class="preset">Armed and Dangerous</button>
     </div>
-    <h1>Card Packs</h1>
-    <h2>Original</h2>
-      
+    <h2>Settings</h2>
+    <div class="flex">
+        <button class="preset">Turn Time</button>
+        <button class="preset">Role Visability</button>
+        <button class="preset">Role Choice</button>
+        <button class="preset">Character Force</button>
+        <button class="preset">Character Choice</button>
+        <button class="preset">Random Seats</button>
+    </div>
+    <button>Create Match</button>
   </div>
 </template>
 
@@ -32,29 +39,34 @@ export default {
             Private: false,       // Private matches only include friends.
         },
 
-        presets: [
-            {
-                num: 0,
-                typekey: "dodge",
-                name: "Dodge City",
-                description: "Official expansion with additional cards and characters.",
-                data: ["original-characters", "original-blue", "original-brown", "dodgecity-characters", "dodgecity-brown", "dodgecity-green", "dodgecity-blue"],
-            },
-            {
-                num: 1,
-                typekey: "armed",
-                name: "Armed and Dangerous",
-                description: "Official expansion with additional game mechanics.",
-                data: ["original-characters", "original-blue", "original-brown", "armedanddangerous-characters", "armedanddangerous-brown", "armedanddangerous-orange"],
-            },
-            {
-                num: 2,
-                typekey: "high",
-                name: "High Noon",
-                description: "Official expansion with turn scenario modifiers.",
-                data: ["original-characters", "original-blue", "original-brown", "original", "scenarios"],
-            },
-        ]
+        ORIGINAL_DECK: {
+            bang: 26,
+            missed: 12,
+            beer: 6,
+            duel: 3,
+
+            catbleu: 4,
+            panic: 4,
+            indians: 2,
+            gatling: 1,
+
+            stationwagon: 2,
+            wellsfargo: 1,
+            generalstore: 2,
+            saloon: 1,
+
+            volcanic: 2,
+            scolfield: 3,
+            remington: 1,
+            revcarabine: 1,
+            wichester: 1,
+
+            appaloosa: 1,
+            mustang: 2,
+            barrel: 2,
+            dynamite: 1,
+            jail: 3,
+        },
       }
   },
   methods: {

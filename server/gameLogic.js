@@ -29,6 +29,7 @@ const SCENARIOS = {
     Schofield: 1,
 }
 
+
 const ORIGINAL_DECK = {
     bang: [13, 13, 0],
     missed: [6, 6],
