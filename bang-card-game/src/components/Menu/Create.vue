@@ -13,28 +13,27 @@
         </div>
       </div>
 
-      <div v-if="page == 0" id="presets-div">
+      <div v-if="page == 0" class="side-menu" id="presets-div">
         <div class="flex window-header" id="deck">
           <h1 class="window-header-title">PRESETS</h1>
         </div>
       </div>
 
-      <div v-if="page == 1" id="lobby-div">
-        <div class="flex window-header" id="deck">
-          <h1 class="window-header-title">LOBBY</h1>
-        </div>
-      </div>
-
-      <div v-if="page == 2" id="gameplay-div">
+      <div v-if="page == 1" class="side-menu" id="lobby-div">
         <div class="flex window-header" id="deck">
           <h1 class="window-header-title">GAME PLAY</h1>
         </div>
+      </div>
+
+      <div v-if="page == 2" class="side-menu" id="gameplay-div">
+        <div class="flex window-header" id="deck">
+          <h1 class="window-header-title">LOBBY SETTINGS</h1>
         </div>
       </div>
 
-      <div v-if="page == 3" id="card-packs">
+      <div v-if="page == 3" class="side-menu" id="card-packs">
         <div class="flex window-header" id="deck">
-          <h1 class="window-header-title">CARD DECK</h1>
+          <h1 class="window-header-title">CARDS</h1>
         </div>
         <div class="flex" id="card-tabs">
           <button @click="changeDeck(0)" v-bind:class="{active : deck == 0}">ORIGINAL</button>
@@ -245,6 +244,16 @@ export default {
 }
 </style>
 <style scoped> /* Component */
+
+.side-menu {
+  position: relative;
+  display: block;
+  width: 55%;
+  height: 100%;
+
+  background-image: url("../../assets/images/PaintedUI/Main Windows/Widnow Frame Large.png");
+  background-size: 100% 100%;
+}
 #create-div {
   width: 75%;
   height: 80%;
@@ -263,45 +272,7 @@ export default {
   background-size: 100% 100%;
 }
 
-#card-packs {
-  position: relative;
-  display: block;
-  width: 55%;
-  height: 100%;
 
-  background-image: url("../../assets/images/PaintedUI/Main Windows/Widnow Frame Large.png");
-  background-size: 100% 100%;
-}
-
-#presets-div {
-  position: relative;
-  display: block;
-  width: 55%;
-  height: 100%;
-
-  background-image: url("../../assets/images/PaintedUI/Main Windows/Widnow Frame Large.png");
-  background-size: 100% 100%;
-}
-
-#lobby-div {
-  position: relative;
-  display: block;
-  width: 55%;
-  height: 100%;
-
-  background-image: url("../../assets/images/PaintedUI/Main Windows/Widnow Frame Large.png");
-  background-size: 100% 100%;
-}
-
-#gameplay-div {
-  position: relative;
-  display: block;
-  width: 55%;
-  height: 100%;
-
-  background-image: url("../../assets/images/PaintedUI/Main Windows/Widnow Frame Large.png");
-  background-size: 100% 100%;
-}
 </style>
 <style scoped> /* Headers */
 .window-header {
@@ -420,7 +391,7 @@ export default {
 #card-tabs button {
   font-family: 'Stylish', sans-serif;
   z-index: 100;
-  color: white;
+  color: rgb(209, 208, 208);
   font-size: 1em;
   background-image: url("../../assets/images/PaintedUI/Character & Inventory/Inventory Tab UnSelected.png");
   background-size: 100% 100%;
@@ -432,8 +403,9 @@ export default {
 }
 
 #card-tabs button.active {
-  background-image: url("../../assets/images/PaintedUI/Character & Inventory/Inventory Tab Selected.png");
-  color: black;
+  background-image: url("../../assets/images/PaintedUI/Character & Inventory/Inventory Tab UnSelected.png");
+  color: white;
+  font-weight: bolder;
 }
 
 #card-deck {
