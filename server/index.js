@@ -13,8 +13,11 @@ var io = socket(server);
 io.on('connection', function(socket) {
     console.log("Socket Connected:", socket.id);
 
-    socket.on('penis', function(data) {
-        io.sockets.emit('penis2', {message: "Fuuuu"});
+    io.sockets.emit('MESSAGECHANNEL', {message: "SUP"});
+
+    
+    socket.on('MESSAGECHANNEL', function(data) {
+        io.sockets.emit('MESSAGECHANNEL', {message: "SUP"});
     });
 });
 
